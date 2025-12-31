@@ -1,4 +1,4 @@
-<!doctype html>
+  <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -12,6 +12,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -43,7 +44,7 @@
       margin-top: 0;
     }
 
-    /* Code entry */
+    /* Code Entry */
     #code-entry {
       text-align: center;
       margin-bottom: 20px;
@@ -54,7 +55,7 @@
       font-size: 16px;
       border-radius: 999px;
       border: 1px solid #ccc;
-      width: 200px;
+      width: 220px;
       text-align: center;
     }
 
@@ -95,6 +96,22 @@
       font-size: clamp(18px, 2.2vw, 22px);
       line-height: 1.6;
       margin-top: 12px;
+      white-space: pre-wrap;
+    }
+
+    /* Change code */
+    #change-code {
+      display: none;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    #change-code button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -102,7 +119,7 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Personal Messages</h1>
+      <h1 id="page-title">Personal Messages</h1>
 
       <!-- Code Entry -->
       <div id="code-entry">
@@ -116,6 +133,11 @@
       <!-- Message -->
       <div class="message" id="message-text">
         Enter your code to begin.
+      </div>
+
+      <!-- Change Code -->
+      <div id="change-code">
+        <button id="change-code-btn">Enter a different code</button>
       </div>
     </div>
   </div>
@@ -135,33 +157,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* Fixed alphabetical name list */
-    const NAMES = [
-      "Amanda",
-      "Austin",
-      "Benedict",
-      "Chrismin",
-      "Hilary",
-      "Isaac",
-      "Jamie",
-      "Jeremy",
-      "Joanna",
-      "Ming Yew",
-      "Nat",
-      "Nathan",
-      "Rachel Koh",
-      "Rachel Lee",
-      "Russell",
-      "Zhi Hao"
-    ];
-
-    let messages = {};
-
     const buttonsDiv = document.getElementById("buttons");
     const messageText = document.getElementById("message-text");
     const codeEntry = document.getElementById("code-entry");
+    const changeCode = document.getElementById("change-code");
+    const pageTitle = document.getElementById("page-title");
 
-    /* Load messages by CODE */
+    let messages = {};
+
+    /* Load messages using CODE */
     async function loadByCode(code) {
       const ref = doc(db, "messageBatches", code);
       const snap = await getDoc(ref);
@@ -171,34 +175,49 @@
         return;
       }
 
-      messages = snap.data().messages || {};
-      showButtons();
+      const data = snap.data();
+      messages = data.messages || {};
+
+      showButtonsFromFirebase();
       messageText.textContent = "Select a name to read their message.";
     }
 
-    /* Create name buttons */
-    function showButtons() {
+    /* Create buttons dynamically from Firebase */
+    function showButtonsFromFirebase() {
       buttonsDiv.innerHTML = "";
       buttonsDiv.style.display = "flex";
       codeEntry.style.display = "none";
+      changeCode.style.display = "block";
 
-      NAMES.forEach(name => {
+      const names = Object.keys(messages).sort((a, b) =>
+        a.localeCompare(b)
+      );
+
+      names.forEach(name => {
         const btn = document.createElement("button");
         btn.className = "btn";
         btn.textContent = name;
 
         btn.onclick = () => {
-          messageText.textContent =
-            messages[name] || "No message from this person.";
+          messageText.textContent = messages[name];
         };
 
         buttonsDiv.appendChild(btn);
       });
     }
 
+    /* Event Listeners */
     document.getElementById("code-btn").onclick = () => {
       const code = document.getElementById("code-input").value.trim();
       if (code) loadByCode(code);
+    };
+
+    document.getElementById("change-code-btn").onclick = () => {
+      buttonsDiv.style.display = "none";
+      changeCode.style.display = "none";
+      codeEntry.style.display = "block";
+      messageText.textContent = "Enter your code to begin.";
+      document.getElementById("code-input").value = "";
     };
   </script>
 </body>
