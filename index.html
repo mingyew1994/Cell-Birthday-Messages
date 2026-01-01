@@ -17,26 +17,25 @@
       margin: 0;
       min-height: 100vh;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.9)),
-        url("background.jpg");
+      background: url("background.png");
       background-size: cover;
       background-position: center;
+      background-attachment: fixed;
       padding: 32px 16px;
       color: var(--text);
     }
-
+    
     .wrap {
       max-width: 900px;
       margin: 0 auto;
     }
 
     .card {
-      background: var(--card-bg);
+      background: rgba(255,255,255,0.9);
       border-radius: 18px;
       padding: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,.15);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(2px);
     }
 
     h1 {
@@ -222,5 +221,6 @@
   </script>
 </body>
 </html>
+
 
 
