@@ -100,6 +100,16 @@
       line-height: 1.6;
       margin-top: 12px;
     }
+
+    /* Birthday Image */
+    #birthday-image {
+      display: none;
+      width: 100%;
+      max-width: 500px;
+      margin: 24px auto 0;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
   </style>
 </head>
 
@@ -121,6 +131,9 @@
       <div class="message" id="message-text">
         Enter your code to begin.
       </div>
+
+      <!-- Birthday Image -->
+      <img id="birthday-image" alt="Birthday photo" />
     </div>
   </div>
 
@@ -143,8 +156,10 @@
     const messageText = document.getElementById("message-text");
     const codeEntry = document.getElementById("code-entry");
     const pageTitle = document.getElementById("page-title");
+    const birthdayImage = document.getElementById("birthday-image");
 
     let messages = {};
+    let imageUrl = null;
 
     /* Load messages using CODE */
     async function loadByCode(code) {
@@ -164,11 +179,20 @@
         pageTitle.textContent = `Happy Birthday ${data.recipient}! 🎉`;
       }
 
+      /* Load image */
+      imageUrl = data.imageUrl || null;
+      if (imageUrl) {
+        birthdayImage.src = imageUrl;
+        birthdayImage.style.display = "block";
+      } else {
+        birthdayImage.style.display = "none";
+      }
+
       showButtonsFromFirebase();
       messageText.textContent = "Select a name to read their message.";
     }
 
-    /* Create buttons dynamically from Firebase */
+    /* Create buttons dynamically */
     function showButtonsFromFirebase() {
       buttonsDiv.innerHTML = "";
       buttonsDiv.style.display = "flex";
@@ -198,4 +222,3 @@
   </script>
 </body>
 </html>
-
