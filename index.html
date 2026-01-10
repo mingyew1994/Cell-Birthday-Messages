@@ -208,8 +208,18 @@
 
         btn.onclick = () => {
           messageText.textContent = messages[name];
+
+          // remove active state from all buttons
+          document.querySelectorAll(".btn").forEach(b =>
+            b.classList.remove("active")
+          );
+
+          // set active state on clicked button
+          btn.classList.add("active");
         };
 
+
+        
         buttonsDiv.appendChild(btn);
       });
     }
@@ -221,6 +231,7 @@
   </script>
 </body>
 </html>
+
 
 
 
